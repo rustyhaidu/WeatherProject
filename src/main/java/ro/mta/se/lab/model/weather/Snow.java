@@ -1,4 +1,4 @@
-package main.model.weather;
+package ro.mta.se.lab.model.weather;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;

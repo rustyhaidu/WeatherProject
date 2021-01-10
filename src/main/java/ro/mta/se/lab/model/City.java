@@ -1,6 +1,6 @@
-package main.model;
+package ro.mta.se.lab.model;
 
-import main.model.weather.Coordinates;
+import ro.mta.se.lab.model.weather.Coordinates;
 
 public class City {
     private int id;

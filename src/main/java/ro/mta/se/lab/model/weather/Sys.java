@@ -1,4 +1,4 @@
-package main.model.weather;
+package ro.mta.se.lab.model.weather;
 
 public class Sys {
     private int type;

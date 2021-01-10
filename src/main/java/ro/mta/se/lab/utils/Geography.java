@@ -1,7 +1,7 @@
-package main.utils;
+package ro.mta.se.lab.utils;
 
-import main.model.City;
-import main.model.weather.Coordinates;
+import ro.mta.se.lab.model.City;
+import ro.mta.se.lab.model.weather.Coordinates;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,7 +13,6 @@ import java.util.*;
 
 public class Geography {
     private final Set<String> countries = new HashSet<>();
-    private final List<City> cities = new ArrayList<>();
     private final Map<String, List<String>> geoCityMap = new HashMap<>();
     private final Map<String, List<City>> geoMap = new HashMap<>();
 
@@ -23,10 +22,6 @@ public class Geography {
 
     public Set<String> getCountries() {
         return countries;
-    }
-
-    public List<City> getCities() {
-        return cities;
     }
 
     public Map<String, List<City>> getGeoMap() {
@@ -61,7 +56,6 @@ public class Geography {
                 coordinates.setLon(Double.parseDouble(coord.get("lon").toString()));
 
                 city.setCoord(coordinates);
-                cities.add(city);
 
                 if (!geoMap.containsKey(country)) {
                     geoMap.put(country, new ArrayList<>());

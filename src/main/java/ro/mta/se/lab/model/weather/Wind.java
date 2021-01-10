@@ -1,4 +1,4 @@
-package main.model.weather;
+package ro.mta.se.lab.model.weather;
 
 public class Wind {
     private double speed;

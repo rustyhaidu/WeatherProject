@@ -1,4 +1,4 @@
-package main;
+package ro.mta.se.lab;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,11 +17,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import main.model.City;
-import main.model.table.TableItem;
-import main.model.weather.WeatherBody;
-import main.utils.FileUtils;
-import main.utils.Geography;
+import ro.mta.se.lab.model.City;
+import ro.mta.se.lab.model.table.TableItem;
+import ro.mta.se.lab.model.weather.WeatherBody;
+import ro.mta.se.lab.utils.FileUtils;
+import ro.mta.se.lab.utils.Geography;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class Project extends Application {
-    private Button reset;
+public class Main extends Application {
     private ComboBox<String> countryChoiceBox;
     private ComboBox<String> cityChoiceBox;
     static List<String> countryList;
@@ -50,7 +49,7 @@ public class Project extends Application {
 
     @Override
     public void start(Stage stage) {
-        stage.setTitle(Project.class.getSimpleName());
+        stage.setTitle(Main.class.getSimpleName());
         stage.setWidth(1000);
         stage.setHeight(800);
 
@@ -62,7 +61,7 @@ public class Project extends Application {
         stage.setScene(scene);
         stage.show();
 
-        reset = new Button("RESET");
+        Button reset = new Button("RESET");
         TableView<TableItem> tableView = new TableView<>();
 
         reset.setOnAction(event -> tableView.getItems().clear());
@@ -75,12 +74,20 @@ public class Project extends Application {
         TableColumn<TableItem, String> column2 = new TableColumn<>("City");
         column2.setCellValueFactory(new PropertyValueFactory<>("city"));
 
-        TableColumn<TableItem, String> column3 = new TableColumn<>("Temperature");
-        column3.setCellValueFactory(new PropertyValueFactory<>("temperature"));
+        TableColumn<TableItem, String> column3 = new TableColumn<>("Latitude");
+        column3.setCellValueFactory(new PropertyValueFactory<>("lat"));
+
+        TableColumn<TableItem, String> column4 = new TableColumn<>("Longitude");
+        column4.setCellValueFactory(new PropertyValueFactory<>("lon"));
+
+        TableColumn<TableItem, String> column5 = new TableColumn<>("Temperature");
+        column5.setCellValueFactory(new PropertyValueFactory<>("temperature"));
 
         tableView.getColumns().add(column1);
         tableView.getColumns().add(column2);
         tableView.getColumns().add(column3);
+        tableView.getColumns().add(column4);
+        tableView.getColumns().add(column5);
 
         VBox vbox = new VBox(tableView);
 
@@ -89,7 +96,6 @@ public class Project extends Application {
 
         countryChoiceBox = new ComboBox<>();
         cityChoiceBox = new ComboBox<>();
-        //cityChoiceBox.setEditable(true);
         countryChoiceBox.setItems(obsCountryList);
 
         countryChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
@@ -130,9 +136,15 @@ public class Project extends Application {
                         double temperature = weatherBody.getMain().getTemp();
                         tableItem.setTemperature(weatherBody.getMain().getTemp());
 
+                        double lat = weatherBody.getCoord().getLat();
+                        tableItem.setLat(lat);
+
+                        double lon = weatherBody.getCoord().getLon();
+                        tableItem.setLon(lon);
+
                         tableView.getItems().add(tableItem);
 
-                        FileUtils.writeToFile(country1 + " " + city + " " + temperature + " " + LocalDateTime.now());
+                        FileUtils.writeToFile(country1 + " " + city + " " + lat + " " + lon + " " + temperature + " " + LocalDateTime.now());
 
                     } catch (IOException e) {
                         e.printStackTrace();
