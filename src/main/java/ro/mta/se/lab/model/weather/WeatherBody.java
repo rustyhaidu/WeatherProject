@@ -11,6 +11,8 @@ public class WeatherBody {
     private Wind wind;
     @JsonIgnore
     private Snow snow;
+    @JsonIgnore
+    private Rain rain;
     private Clouds clouds;
     private int dt;
     private Sys sys;
@@ -132,5 +134,13 @@ public class WeatherBody {
 
     public void setSnow(Snow snow) {
         this.snow = snow;
+    }
+
+    public Rain getRain() {
+        return rain;
+    }
+
+    public void setRain(Rain rain) {
+        this.rain = rain;
     }
 }

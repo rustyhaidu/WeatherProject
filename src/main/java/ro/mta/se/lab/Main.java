@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
     private ComboBox<String> countryChoiceBox;
@@ -98,6 +99,8 @@ public class Main extends Application {
         cityChoiceBox = new ComboBox<>();
         countryChoiceBox.setItems(obsCountryList);
 
+        final int[] previousNewValue = {0};
+
         countryChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             String countryName = countryChoiceBox.getItems().get((Integer) newValue);
 
@@ -111,43 +114,49 @@ public class Main extends Application {
 
             cityChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable1, oldValue1, newValue1) -> {
                 if (!newValue1.equals(-1)) {
-                    String cityName = cityChoiceBox.getItems().get((Integer) newValue1);
-                    System.out.println(cityName);
 
-                    ObjectMapper mapper = new ObjectMapper();
-                    OkHttpClient client = new OkHttpClient();
+                    int newVal = (int) newValue1;
 
-                    Request request = new Request.Builder()
-                            .url("http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=91b14ab8d3eb4985193f39010f433451&units=metric")
-                            .build(); // defaults to GET
+                    if (previousNewValue[0] != newVal) {
+                        previousNewValue[0] = newVal;
+                        String cityName = cityChoiceBox.getItems().get((int) newValue1);
+                        System.out.println(cityName);
 
-                    Response response;
-                    try {
-                        response = client.newCall(request).execute();
-                        WeatherBody weatherBody = mapper.readValue(response.body().byteStream(), WeatherBody.class);
+                        ObjectMapper mapper = new ObjectMapper();
+                        OkHttpClient client = new OkHttpClient();
 
-                        TableItem tableItem = new TableItem();
-                        String country1 = weatherBody.getSys().getCountry();
-                        tableItem.setCountry(country1);
+                        Request request = new Request.Builder()
+                                .url("http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=91b14ab8d3eb4985193f39010f433451&units=metric")
+                                .build(); // defaults to GET
 
-                        String city = weatherBody.getName();
-                        tableItem.setCity(city);
+                        Response response;
+                        try {
+                            response = client.newCall(request).execute();
+                            WeatherBody weatherBody = mapper.readValue(response.body().byteStream(), WeatherBody.class);
 
-                        double temperature = weatherBody.getMain().getTemp();
-                        tableItem.setTemperature(weatherBody.getMain().getTemp());
+                            TableItem tableItem = new TableItem();
+                            String country1 = weatherBody.getSys().getCountry();
+                            tableItem.setCountry(country1);
 
-                        double lat = weatherBody.getCoord().getLat();
-                        tableItem.setLat(lat);
+                            String city = weatherBody.getName();
+                            tableItem.setCity(city);
 
-                        double lon = weatherBody.getCoord().getLon();
-                        tableItem.setLon(lon);
+                            double temperature = weatherBody.getMain().getTemp();
+                            tableItem.setTemperature(weatherBody.getMain().getTemp());
 
-                        tableView.getItems().add(tableItem);
+                            double lat = weatherBody.getCoord().getLat();
+                            tableItem.setLat(lat);
 
-                        FileUtils.writeToFile(country1 + " " + city + " " + lat + " " + lon + " " + temperature + " " + LocalDateTime.now());
+                            double lon = weatherBody.getCoord().getLon();
+                            tableItem.setLon(lon);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            tableView.getItems().add(tableItem);
+
+                            FileUtils.writeToFile(country1 + " " + city + " " + lat + " " + lon + " " + temperature + " " + LocalDateTime.now());
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             });
